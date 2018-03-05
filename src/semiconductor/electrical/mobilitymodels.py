@@ -272,8 +272,8 @@ def unified_mobility_compensated(vals, Na, Nd, nxc, temp, carrier, **kwargs):
                              temp=temp)
 
     return 1. / (
-        1. / uDCS(carrier, vals, nh, ne, Na, Nd, temp) +
-        1. / uLS(carrier, vals, temp))
+        1. / uDCS_compensated(carrier, vals, nh, ne, Na, Nd, temp) +
+        1. / uLS_compensated(carrier, vals, temp))
 
 
 def uLS(carrier, vals, temp):
@@ -283,7 +283,7 @@ def uLS(carrier, vals, temp):
 
 def uLS_compensated(carrier, vals, temp):
     return vals['umax_' + carrier] * (300. / temp)**vals['theta_' + carrier] +\
-        vals['u_cor'] * np.exp((-temp / vals['t_cor'])**vals['theta_h_cor'])
+        vals['u_cor'] * np.exp(-(temp / vals['t_cor'])**vals['theta_h_cor'])
 
 
 def uDCS(carrier, vals, nh, ne, Na, Nd, temp):
@@ -308,7 +308,7 @@ def uDCS_compensated(carrier, vals, nh, ne, Na, Nd, temp):
                                nxc=0,
                                temp=300.)
 
-    C_l = (Na + Nd) / (nh0 + ne0)
+    C_l = (Na + Nd) / np.abs(Na - Nd)
 
     if C_l < 1:
         C_l = 1
